@@ -3,12 +3,11 @@ package org.wordpress.android.ui.prefs;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.preference.Preference;
-import android.support.annotation.NonNull;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.TextView;
 
 import org.wordpress.android.R;
@@ -31,13 +30,11 @@ public class WPPreference extends Preference implements PreferenceHint {
         array.recycle();
     }
 
-    @Override
-    protected void onBindView(@NonNull View view) {
-        super.onBindView(view);
-
+    @Override public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
         Resources res = getContext().getResources();
-        TextView titleView = (TextView) view.findViewById(android.R.id.title);
-        TextView summaryView = (TextView) view.findViewById(android.R.id.summary);
+        TextView titleView = (TextView) holder.findViewById(android.R.id.title);
+        TextView summaryView = (TextView) holder.findViewById(android.R.id.summary);
         if (titleView != null) {
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.text_sz_large));
             titleView.setTextColor(res.getColor(isEnabled() ? R.color.grey_dark : R.color.grey_lighten_10));
@@ -47,6 +44,23 @@ public class WPPreference extends Preference implements PreferenceHint {
             summaryView.setTextColor(res.getColor(isEnabled() ? R.color.grey_text_min : R.color.grey_lighten_10));
         }
     }
+
+//    @Override
+//    protected void onBindView(@NonNull View view) {
+//        super.onBindView(view);
+//
+//        Resources res = getContext().getResources();
+//        TextView titleView = (TextView) view.findViewById(android.R.id.title);
+//        TextView summaryView = (TextView) view.findViewById(android.R.id.summary);
+//        if (titleView != null) {
+//            titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.text_sz_large));
+//            titleView.setTextColor(res.getColor(isEnabled() ? R.color.grey_dark : R.color.grey_lighten_10));
+//        }
+//        if (summaryView != null) {
+//            summaryView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.text_sz_medium));
+//            summaryView.setTextColor(res.getColor(isEnabled() ? R.color.grey_text_min : R.color.grey_lighten_10));
+//        }
+//    }
 
     @Override
     public boolean hasHint() {

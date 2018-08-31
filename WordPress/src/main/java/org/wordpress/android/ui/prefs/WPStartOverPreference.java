@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -46,19 +47,18 @@ public class WPStartOverPreference extends WPPreference {
         array.recycle();
     }
 
-    @Override
-    protected void onBindView(@NonNull View view) {
-        super.onBindView(view);
+    @Override public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
 
-        if (view.findViewById(R.id.pref_icon) != null) {
-            ImageView imageView = (ImageView) view.findViewById(R.id.pref_icon);
+        if (holder.findViewById(R.id.pref_icon) != null) {
+            ImageView imageView = (ImageView) holder.findViewById(R.id.pref_icon);
             imageView.setImageDrawable(mPrefIcon);
         }
 
-        if (view.findViewById(R.id.button) != null) {
+        if (holder.findViewById(R.id.button) != null) {
             final WPStartOverPreference wpStartOverPreference = this;
 
-            Button button = (Button) view.findViewById(R.id.button);
+            Button button = (Button) holder.findViewById(R.id.button);
             button.setText(mButtonText);
             button.setTextColor(mButtonTextColor);
             button.setAllCaps(mButtonTextAllCaps);
@@ -70,10 +70,41 @@ public class WPStartOverPreference extends WPPreference {
             });
         }
 
-        if (view.findViewById(R.id.domain) != null) {
-            TextView textView = (TextView) view.findViewById(R.id.domain);
+        if (holder.findViewById(R.id.domain) != null) {
+            TextView textView = (TextView) holder.findViewById(R.id.domain);
             // TODO: FluxC: We might want to get the selected site here and update the view
             // textView.setText(UrlUtils.getHost(blog.getHomeURL()));
         }
     }
+
+//    @Override
+//    protected void onBindView(@NonNull View view) {
+//        super.onBindView(view);
+//
+//        if (view.findViewById(R.id.pref_icon) != null) {
+//            ImageView imageView = (ImageView) view.findViewById(R.id.pref_icon);
+//            imageView.setImageDrawable(mPrefIcon);
+//        }
+//
+//        if (view.findViewById(R.id.button) != null) {
+//            final WPStartOverPreference wpStartOverPreference = this;
+//
+//            Button button = (Button) view.findViewById(R.id.button);
+//            button.setText(mButtonText);
+//            button.setTextColor(mButtonTextColor);
+//            button.setAllCaps(mButtonTextAllCaps);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    getOnPreferenceClickListener().onPreferenceClick(wpStartOverPreference);
+//                }
+//            });
+//        }
+//
+//        if (view.findViewById(R.id.domain) != null) {
+//            TextView textView = (TextView) view.findViewById(R.id.domain);
+//            // TODO: FluxC: We might want to get the selected site here and update the view
+//            // textView.setText(UrlUtils.getHost(blog.getHomeURL()));
+//        }
+//    }
 }

@@ -7,13 +7,12 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -21,6 +20,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.android.volley.VolleyError;
+import com.takisoft.fix.support.v7.preference.PreferenceCategory;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import com.wordpress.rest.RestRequest;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -75,7 +76,7 @@ import static org.wordpress.android.fluxc.generated.AccountActionBuilder.newUpda
 import static org.wordpress.android.fluxc.generated.AccountActionBuilder.newUpdateSubscriptionNotificationPostAction;
 import static org.wordpress.android.ui.RequestCodes.NOTIFICATION_SETTINGS;
 
-public class NotificationsSettingsFragment extends PreferenceFragment
+public class NotificationsSettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String KEY_SEARCH_QUERY = "search_query";
     private static final int SITE_SEARCH_VISIBILITY_COUNT = 15;
@@ -115,14 +116,16 @@ public class NotificationsSettingsFragment extends PreferenceFragment
         super.onCreate(savedInstanceState);
         ((WordPress) getActivity().getApplication()).component().inject(this);
 
-        addPreferencesFromResource(R.xml.notifications_settings);
-        setHasOptionsMenu(true);
-        removeSightAndSoundsForAPI26();
-
         // Bump Analytics
         if (savedInstanceState == null) {
             AnalyticsTracker.track(AnalyticsTracker.Stat.NOTIFICATION_SETTINGS_LIST_OPENED);
         }
+    }
+
+    @Override public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+        addPreferencesFromResource(R.xml.notifications_settings);
+        setHasOptionsMenu(true);
+        removeSightAndSoundsForAPI26();
     }
 
     private void removeSightAndSoundsForAPI26() {
@@ -830,23 +833,23 @@ public class NotificationsSettingsFragment extends PreferenceFragment
                 }
             };
 
-    @Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference) {
-        super.onPreferenceTreeClick(preferenceScreen, preference);
-
-        if (preference instanceof PreferenceScreen) {
-            Dialog prefDialog = ((PreferenceScreen) preference).getDialog();
-            if (prefDialog != null) {
-                String title = String.valueOf(preference.getTitle());
-                WPActivityUtils.addToolbarToDialog(this, prefDialog, title);
-            }
-            AnalyticsTracker.track(AnalyticsTracker.Stat.NOTIFICATION_SETTINGS_STREAMS_OPENED);
-        } else {
-            AnalyticsTracker.track(AnalyticsTracker.Stat.NOTIFICATION_SETTINGS_DETAILS_OPENED);
-        }
-
-        return false;
-    }
+//    @Override
+//    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference) {
+//        super.onPreferenceTreeClick(preferenceScreen, preference);
+//
+//        if (preference instanceof PreferenceScreen) {
+//            Dialog prefDialog = ((PreferenceScreen) preference).getDialog();
+//            if (prefDialog != null) {
+//                String title = String.valueOf(preference.getTitle());
+//                WPActivityUtils.addToolbarToDialog(this, prefDialog, title);
+//            }
+//            AnalyticsTracker.track(AnalyticsTracker.Stat.NOTIFICATION_SETTINGS_STREAMS_OPENED);
+//        } else {
+//            AnalyticsTracker.track(AnalyticsTracker.Stat.NOTIFICATION_SETTINGS_DETAILS_OPENED);
+//        }
+//
+//        return false;
+//    }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

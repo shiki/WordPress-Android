@@ -1,8 +1,8 @@
 package org.wordpress.android.ui.prefs;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -30,7 +30,7 @@ public class AppSettingsActivity extends AppCompatActivity {
             actionBar.setTitle(R.string.me_btn_app_settings);
         }
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         mAppSettingsFragment = (AppSettingsFragment) fragmentManager.findFragmentByTag(KEY_APP_SETTINGS_FRAGMENT);
         if (mAppSettingsFragment == null) {
             mAppSettingsFragment = new AppSettingsFragment();

@@ -1,9 +1,9 @@
 package org.wordpress.android.ui.prefs.notifications;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +52,7 @@ public class NotificationsSettingsActivity extends AppCompatActivity {
         // Set up primary and secondary toolbars for master switch.
         setUpToolbars();
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
                            .add(R.id.fragment_container, new NotificationsSettingsFragment())

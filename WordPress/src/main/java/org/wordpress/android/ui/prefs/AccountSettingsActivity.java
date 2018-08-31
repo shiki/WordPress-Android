@@ -1,8 +1,8 @@
 package org.wordpress.android.ui.prefs;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -28,7 +28,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
             actionBar.setTitle(R.string.account_settings);
         }
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         AccountSettingsFragment accountSettingsFragment =
                 (AccountSettingsFragment) fragmentManager.findFragmentByTag(KEY_ACCOUNT_SETTINGS_FRAGMENT);
         if (accountSettingsFragment == null) {

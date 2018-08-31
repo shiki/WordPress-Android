@@ -1,12 +1,13 @@
 package org.wordpress.android.util;
 
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceGroup;
 import android.util.TypedValue;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.takisoft.fix.support.v7.preference.PreferenceCategory;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import org.wordpress.android.R;
 
@@ -18,7 +19,7 @@ public class WPPrefUtils {
     /**
      * Gets a preference and sets the {@link android.preference.Preference.OnPreferenceChangeListener}.
      */
-    public static Preference getPrefAndSetClickListener(PreferenceFragment prefFrag,
+    public static Preference getPrefAndSetClickListener(PreferenceFragmentCompat prefFrag,
                                                         int id,
                                                         Preference.OnPreferenceClickListener listener) {
         Preference pref = prefFrag.findPreference(prefFrag.getString(id));
@@ -31,7 +32,7 @@ public class WPPrefUtils {
     /**
      * Gets a preference and sets the {@link android.preference.Preference.OnPreferenceChangeListener}.
      */
-    public static Preference getPrefAndSetChangeListener(PreferenceFragment prefFrag,
+    public static Preference getPrefAndSetChangeListener(PreferenceFragmentCompat prefFrag,
                                                          int id,
                                                          Preference.OnPreferenceChangeListener listener) {
         Preference pref = prefFrag.findPreference(prefFrag.getString(id));
@@ -44,7 +45,7 @@ public class WPPrefUtils {
     /**
      * Removes a {@link Preference} from the {@link PreferenceCategory} with the given key.
      */
-    public static void removePreference(PreferenceFragment prefFrag, int parentKey, int prefKey) {
+    public static void removePreference(PreferenceFragmentCompat prefFrag, int parentKey, int prefKey) {
         String parentName = prefFrag.getString(parentKey);
         String prefName = prefFrag.getString(prefKey);
         PreferenceGroup parent = (PreferenceGroup) prefFrag.findPreference(parentName);

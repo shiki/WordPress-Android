@@ -1,9 +1,7 @@
 package org.wordpress.android.ui.prefs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,15 +9,15 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.util.SparseArrayCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -44,6 +42,9 @@ import android.widget.NumberPicker.Formatter;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.takisoft.fix.support.v7.preference.EditTextPreference;
+import com.takisoft.fix.support.v7.preference.PreferenceCategory;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import com.wordpress.rest.RestRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -93,7 +94,7 @@ import static org.wordpress.android.ui.prefs.WPComSiteSettings.supportsJetpackSp
  * Settings are synced automatically when local changes are made.
  */
 
-public class SiteSettingsFragment extends PreferenceFragment
+public class SiteSettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceChangeListener,
         Preference.OnPreferenceClickListener,
         AdapterView.OnItemLongClickListener,
@@ -259,7 +260,10 @@ public class SiteSettingsFragment extends PreferenceFragment
             getActivity().finish();
             return;
         }
+    }
 
+    @Override
+    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         if (savedInstanceState == null) {
             mSite = (SiteModel) getArguments().getSerializable(WordPress.SITE);
         } else {
@@ -279,7 +283,7 @@ public class SiteSettingsFragment extends PreferenceFragment
         mShouldFetch = true;
 
         // initialize the appropriate settings interface (WP.com or WP.org)
-        mSiteSettings = SiteSettingsInterface.getInterface(activity, mSite, this);
+        mSiteSettings = SiteSettingsInterface.getInterface(getActivity(), mSite, this);
 
         setRetainInstance(true);
         addPreferencesFromResource();
@@ -483,50 +487,51 @@ public class SiteSettingsFragment extends PreferenceFragment
         // NOP
     }
 
-    @Override
-    public boolean onPreferenceTreeClick(PreferenceScreen screen, Preference preference) {
-        super.onPreferenceTreeClick(screen, preference);
-
-        // More preference selected, style the Discussion screen
-        if (preference == mMorePreference) {
-            // track user accessing the full Discussion settings screen
-            AnalyticsUtils.trackWithSiteDetails(
-                    AnalyticsTracker.Stat.SITE_SETTINGS_ACCESSED_MORE_SETTINGS, mSite);
-
-            return setupMorePreferenceScreen();
-        } else if (preference == mJpSecuritySettings) {
-            setupJetpackSecurityScreen();
-        } else if (preference == mSpeedUpYourSiteSettings) {
-            setupSpeedUpScreen();
-        } else if (preference == findPreference(getString(R.string.pref_key_site_start_over_screen))) {
-            Dialog dialog = ((PreferenceScreen) preference).getDialog();
-            if (mSite == null || dialog == null) {
-                return false;
-            }
-
-            AnalyticsUtils.trackWithSiteDetails(AnalyticsTracker.Stat.SITE_SETTINGS_START_OVER_ACCESSED, mSite);
-
-            if (mSite.getHasFreePlan()) {
-                // Don't show the start over detail screen for free users, instead show the support page
-                dialog.dismiss();
-                WPWebViewActivity.openUrlByUsingGlobalWPCOMCredentials(getActivity(), WORDPRESS_EMPTY_SITE_SUPPORT_URL);
-            } else {
-                setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
-                String title = getString(R.string.start_over);
-                WPActivityUtils.addToolbarToDialog(this, dialog, title);
-            }
-        } else if (preference == mDateFormatPref) {
-            showDateOrTimeFormatDialog(FormatType.DATE_FORMAT);
-        } else if (preference == mTimeFormatPref) {
-            showDateOrTimeFormatDialog(FormatType.TIME_FORMAT);
-        } else if (preference == mPostsPerPagePref) {
-            showPostsPerPageDialog();
-        } else if (preference == mTimezonePref) {
-            showTimezoneDialog();
-        }
-
-        return false;
-    }
+//    @Override
+//    public boolean onPreferenceTreeClick(PreferenceScreen screen, Preference preference) {
+//        super.onPreferenceTreeClick(screen, preference);
+//
+//        // More preference selected, style the Discussion screen
+//        if (preference == mMorePreference) {
+//            // track user accessing the full Discussion settings screen
+//            AnalyticsUtils.trackWithSiteDetails(
+//                    AnalyticsTracker.Stat.SITE_SETTINGS_ACCESSED_MORE_SETTINGS, mSite);
+//
+//            return setupMorePreferenceScreen();
+//        } else if (preference == mJpSecuritySettings) {
+//            setupJetpackSecurityScreen();
+//        } else if (preference == mSpeedUpYourSiteSettings) {
+//            setupSpeedUpScreen();
+//        } else if (preference == findPreference(getString(R.string.pref_key_site_start_over_screen))) {
+//            Dialog dialog = ((PreferenceScreen) preference).getDialog();
+//            if (mSite == null || dialog == null) {
+//                return false;
+//            }
+//
+//            AnalyticsUtils.trackWithSiteDetails(AnalyticsTracker.Stat.SITE_SETTINGS_START_OVER_ACCESSED, mSite);
+//
+//            if (mSite.getHasFreePlan()) {
+//                // Don't show the start over detail screen for free users, instead show the support page
+//                dialog.dismiss();
+//                WPWebViewActivity.openUrlByUsingGlobalWPCOMCredentials(getActivity(),
+// WORDPRESS_EMPTY_SITE_SUPPORT_URL);
+//            } else {
+//                setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
+//                String title = getString(R.string.start_over);
+//                WPActivityUtils.addToolbarToDialog(this, dialog, title);
+//            }
+//        } else if (preference == mDateFormatPref) {
+//            showDateOrTimeFormatDialog(FormatType.DATE_FORMAT);
+//        } else if (preference == mTimeFormatPref) {
+//            showDateOrTimeFormatDialog(FormatType.TIME_FORMAT);
+//        } else if (preference == mPostsPerPagePref) {
+//            showPostsPerPageDialog();
+//        } else if (preference == mTimezonePref) {
+//            showTimezoneDialog();
+//        }
+//
+//        return false;
+//    }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
@@ -1610,11 +1615,11 @@ public class SiteSettingsFragment extends PreferenceFragment
             return;
         }
         String title = getString(R.string.jetpack_security_setting_title);
-        Dialog dialog = mJpSecuritySettings.getDialog();
-        if (dialog != null) {
-            setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
-            WPActivityUtils.addToolbarToDialog(this, dialog, title);
-        }
+//        Dialog dialog = mJpSecuritySettings.getDialog();
+//        if (dialog != null) {
+//            setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
+//            WPActivityUtils.addToolbarToDialog(this, dialog, title);
+//        }
     }
 
     private void setupSpeedUpScreen() {
@@ -1622,11 +1627,11 @@ public class SiteSettingsFragment extends PreferenceFragment
             return;
         }
         String title = getString(R.string.site_settings_speed_up_your_site);
-        Dialog dialog = mSpeedUpYourSiteSettings.getDialog();
-        if (dialog != null) {
-            setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
-            WPActivityUtils.addToolbarToDialog(this, dialog, title);
-        }
+//        Dialog dialog = mSpeedUpYourSiteSettings.getDialog();
+//        if (dialog != null) {
+//            setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
+//            WPActivityUtils.addToolbarToDialog(this, dialog, title);
+//        }
     }
 
     private boolean setupMorePreferenceScreen() {
@@ -1634,13 +1639,13 @@ public class SiteSettingsFragment extends PreferenceFragment
             return false;
         }
         String title = getString(R.string.site_settings_discussion_title);
-        Dialog dialog = mMorePreference.getDialog();
-        if (dialog != null) {
-            dialog.setTitle(title);
-            setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
-            WPActivityUtils.addToolbarToDialog(this, dialog, title);
-            return true;
-        }
+//        Dialog dialog = mMorePreference.getDialog();
+//        if (dialog != null) {
+//            dialog.setTitle(title);
+//            setupPreferenceList((ListView) dialog.findViewById(android.R.id.list), getResources());
+//            WPActivityUtils.addToolbarToDialog(this, dialog, title);
+//            return true;
+//        }
         return false;
     }
 
@@ -1648,16 +1653,16 @@ public class SiteSettingsFragment extends PreferenceFragment
         if (mMorePreference == null || !isAdded()) {
             return;
         }
-        Dialog moreDialog = mMorePreference.getDialog();
-        WPActivityUtils.removeToolbarFromDialog(this, moreDialog);
+//        Dialog moreDialog = mMorePreference.getDialog();
+//        WPActivityUtils.removeToolbarFromDialog(this, moreDialog);
     }
 
     private void removeJetpackSecurityScreenToolbar() {
         if (mJpSecuritySettings == null || !isAdded()) {
             return;
         }
-        Dialog securityDialog = mJpSecuritySettings.getDialog();
-        WPActivityUtils.removeToolbarFromDialog(this, securityDialog);
+//        Dialog securityDialog = mJpSecuritySettings.getDialog();
+//        WPActivityUtils.removeToolbarFromDialog(this, securityDialog);
     }
 
     private void hideAdminRequiredPreferences() {

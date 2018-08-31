@@ -2,8 +2,8 @@ package org.wordpress.android.ui.prefs.notifications;
 
 import android.app.ActionBar;
 import android.content.Context;
-import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
+import android.support.v7.preference.DialogPreference;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -52,32 +52,27 @@ public class NotificationsSettingsDialogPreference extends DialogPreference {
         mOnNotificationsSettingsChangedListener = listener;
     }
 
-    @Override
-    protected void onBindDialogView(@NonNull View view) {
-        super.onBindDialogView(view);
-    }
-
-    @Override
-    protected View onCreateDialogView() {
-        ScrollView outerView = new ScrollView(getContext());
-        outerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                                                LinearLayout.LayoutParams.WRAP_CONTENT));
-
-        LinearLayout innerView = new LinearLayout(getContext());
-        innerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                                                LinearLayout.LayoutParams.MATCH_PARENT));
-        innerView.setOrientation(LinearLayout.VERTICAL);
-
-        View spacerView = new View(getContext());
-        int spacerHeight = getContext().getResources().getDimensionPixelSize(R.dimen.margin_medium);
-        spacerView.setLayoutParams(new ViewGroup.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, spacerHeight));
-        innerView.addView(spacerView);
-
-        outerView.addView(innerView);
-        configureLayoutForView(innerView);
-
-        return outerView;
-    }
+//    @Override
+//    protected View onCreateDialogView() {
+//        ScrollView outerView = new ScrollView(getContext());
+//        outerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+//                                                                LinearLayout.LayoutParams.WRAP_CONTENT));
+//
+//        LinearLayout innerView = new LinearLayout(getContext());
+//        innerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+//                                                                LinearLayout.LayoutParams.MATCH_PARENT));
+//        innerView.setOrientation(LinearLayout.VERTICAL);
+//
+//        View spacerView = new View(getContext());
+//        int spacerHeight = getContext().getResources().getDimensionPixelSize(R.dimen.margin_medium);
+//        spacerView.setLayoutParams(new ViewGroup.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, spacerHeight));
+//        innerView.addView(spacerView);
+//
+//        outerView.addView(innerView);
+//        configureLayoutForView(innerView);
+//
+//        return outerView;
+//    }
 
     private View configureLayoutForView(LinearLayout view) {
         JSONObject settingsJson = null;
@@ -162,20 +157,20 @@ public class NotificationsSettingsDialogPreference extends DialogPreference {
                 }
             };
 
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        if (positiveResult && mUpdatedJson.length() > 0 && mOnNotificationsSettingsChangedListener != null) {
-            mOnNotificationsSettingsChangedListener.onSettingsChanged(mChannel, mType, mBlogId, mUpdatedJson);
-
-            // Update the settings json
-            Iterator<?> keys = mUpdatedJson.keys();
-            while (keys.hasNext()) {
-                String settingName = (String) keys.next();
-                mSettings.updateSettingForChannelAndType(
-                        mChannel, mType, settingName,
-                        mUpdatedJson.optBoolean(settingName), mBlogId
-                );
-            }
-        }
-    }
+//    @Override
+//    protected void onDialogClosed(boolean positiveResult) {
+//        if (positiveResult && mUpdatedJson.length() > 0 && mOnNotificationsSettingsChangedListener != null) {
+//            mOnNotificationsSettingsChangedListener.onSettingsChanged(mChannel, mType, mBlogId, mUpdatedJson);
+//
+//            // Update the settings json
+//            Iterator<?> keys = mUpdatedJson.keys();
+//            while (keys.hasNext()) {
+//                String settingName = (String) keys.next();
+//                mSettings.updateSettingForChannelAndType(
+//                        mChannel, mType, settingName,
+//                        mUpdatedJson.optBoolean(settingName), mBlogId
+//                );
+//            }
+//        }
+//    }
 }

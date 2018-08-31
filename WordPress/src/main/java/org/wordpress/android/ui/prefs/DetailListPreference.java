@@ -5,9 +5,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -60,15 +61,24 @@ public class DetailListPreference extends ListPreference
         mSelectedIndex = -1;
     }
 
-    @Override
-    protected void onBindView(@NonNull View view) {
-        super.onBindView(view);
+    @Override public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
 
-        setupView((TextView) view.findViewById(android.R.id.title),
-                  R.dimen.text_sz_large, R.color.grey_dark, R.color.grey_lighten_10);
-        setupView((TextView) view.findViewById(android.R.id.summary),
-                  R.dimen.text_sz_medium, R.color.grey_text_min, R.color.grey_lighten_10);
+        setupView((TextView) holder.findViewById(android.R.id.title),
+                R.dimen.text_sz_large, R.color.grey_dark, R.color.grey_lighten_10);
+        setupView((TextView) holder.findViewById(android.R.id.summary),
+                R.dimen.text_sz_medium, R.color.grey_text_min, R.color.grey_lighten_10);
     }
+
+//    @Override
+//    protected void onBindView(@NonNull View view) {
+//        super.onBindView(view);
+//
+//        setupView((TextView) view.findViewById(android.R.id.title),
+//                  R.dimen.text_sz_large, R.color.grey_dark, R.color.grey_lighten_10);
+//        setupView((TextView) view.findViewById(android.R.id.summary),
+//                  R.dimen.text_sz_medium, R.color.grey_text_min, R.color.grey_lighten_10);
+//    }
 
     @Override
     public CharSequence getEntry() {
@@ -81,95 +91,95 @@ public class DetailListPreference extends ListPreference
         return null;
     }
 
-    @Override
-    protected void showDialog(Bundle state) {
-        Context context = getContext();
-        Resources res = context.getResources();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.Calypso_Dialog_Alert);
-
-        mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
-        builder.setPositiveButton(android.R.string.ok, this);
-        builder.setNegativeButton(res.getString(android.R.string.cancel).toUpperCase(Locale.getDefault()), this);
-
-        if (mDetails == null) {
-            mDetails = new String[getEntries() == null ? 1 : getEntries().length];
-        }
-
-        mListAdapter = new DetailListAdapter(getContext(), R.layout.detail_list_preference, mDetails);
-        mStartingValue = getValue();
-        mSelectedIndex = findIndexOfValue(mStartingValue);
-
-        builder.setSingleChoiceItems(mListAdapter, mSelectedIndex,
-                                     new DialogInterface.OnClickListener() {
-                                         public void onClick(DialogInterface dialog, int which) {
-                                             mSelectedIndex = which;
-                                         }
-                                     });
-
-        View titleView = View.inflate(getContext(), R.layout.detail_list_preference_title, null);
-
-        if (titleView != null) {
-            TextView titleText = (TextView) titleView.findViewById(R.id.title);
-            if (titleText != null) {
-                titleText.setText(getTitle());
-            }
-
-            builder.setCustomTitle(titleView);
-        } else {
-            builder.setTitle(getTitle());
-        }
-
-        if ((mDialog = builder.create()) == null) {
-            return;
-        }
-
-        if (state != null) {
-            mDialog.onRestoreInstanceState(state);
-        }
-        mDialog.setOnDismissListener(this);
-        mDialog.show();
-
-        ListView listView = mDialog.getListView();
-        Button positive = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        Button negative = mDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-
-        if (listView != null) {
-            listView.setDividerHeight(0);
-            listView.setClipToPadding(true);
-            listView.setPadding(0, 0, 0, res.getDimensionPixelSize(R.dimen.site_settings_divider_height));
-        }
-
-        if (positive != null) {
-            //noinspection deprecation
-            positive.setTextColor(res.getColor(R.color.blue_medium));
-        }
-
-        if (negative != null) {
-            //noinspection deprecation
-            negative.setTextColor(res.getColor(R.color.blue_medium));
-        }
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        mWhichButtonClicked = which;
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        mDialog = null;
-        onDialogClosed(mWhichButtonClicked == DialogInterface.BUTTON_POSITIVE);
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        int index = positiveResult ? mSelectedIndex : findIndexOfValue(mStartingValue);
-        CharSequence[] values = getEntryValues();
-        if (values != null && index >= 0 && index < values.length) {
-            String value = String.valueOf(values[index]);
-            callChangeListener(value);
-        }
-    }
+//    @Override
+//    protected void showDialog(Bundle state) {
+//        Context context = getContext();
+//        Resources res = context.getResources();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.Calypso_Dialog_Alert);
+//
+//        mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
+//        builder.setPositiveButton(android.R.string.ok, this);
+//        builder.setNegativeButton(res.getString(android.R.string.cancel).toUpperCase(Locale.getDefault()), this);
+//
+//        if (mDetails == null) {
+//            mDetails = new String[getEntries() == null ? 1 : getEntries().length];
+//        }
+//
+//        mListAdapter = new DetailListAdapter(getContext(), R.layout.detail_list_preference, mDetails);
+//        mStartingValue = getValue();
+//        mSelectedIndex = findIndexOfValue(mStartingValue);
+//
+//        builder.setSingleChoiceItems(mListAdapter, mSelectedIndex,
+//                                     new DialogInterface.OnClickListener() {
+//                                         public void onClick(DialogInterface dialog, int which) {
+//                                             mSelectedIndex = which;
+//                                         }
+//                                     });
+//
+//        View titleView = View.inflate(getContext(), R.layout.detail_list_preference_title, null);
+//
+//        if (titleView != null) {
+//            TextView titleText = (TextView) titleView.findViewById(R.id.title);
+//            if (titleText != null) {
+//                titleText.setText(getTitle());
+//            }
+//
+//            builder.setCustomTitle(titleView);
+//        } else {
+//            builder.setTitle(getTitle());
+//        }
+//
+//        if ((mDialog = builder.create()) == null) {
+//            return;
+//        }
+//
+//        if (state != null) {
+//            mDialog.onRestoreInstanceState(state);
+//        }
+//        mDialog.setOnDismissListener(this);
+//        mDialog.show();
+//
+//        ListView listView = mDialog.getListView();
+//        Button positive = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+//        Button negative = mDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+//
+//        if (listView != null) {
+//            listView.setDividerHeight(0);
+//            listView.setClipToPadding(true);
+//            listView.setPadding(0, 0, 0, res.getDimensionPixelSize(R.dimen.site_settings_divider_height));
+//        }
+//
+//        if (positive != null) {
+//            //noinspection deprecation
+//            positive.setTextColor(res.getColor(R.color.blue_medium));
+//        }
+//
+//        if (negative != null) {
+//            //noinspection deprecation
+//            negative.setTextColor(res.getColor(R.color.blue_medium));
+//        }
+//    }
+//
+//    @Override
+//    public void onClick(DialogInterface dialog, int which) {
+//        mWhichButtonClicked = which;
+//    }
+//
+//    @Override
+//    public void onDismiss(DialogInterface dialog) {
+//        mDialog = null;
+//        onDialogClosed(mWhichButtonClicked == DialogInterface.BUTTON_POSITIVE);
+//    }
+//
+//    @Override
+//    protected void onDialogClosed(boolean positiveResult) {
+//        int index = positiveResult ? mSelectedIndex : findIndexOfValue(mStartingValue);
+//        CharSequence[] values = getEntryValues();
+//        if (values != null && index >= 0 && index < values.length) {
+//            String value = String.valueOf(values[index]);
+//            callChangeListener(value);
+//        }
+//    }
 
     @Override
     public boolean hasHint() {

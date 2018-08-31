@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.preference.SwitchPreference;
-import android.support.annotation.NonNull;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -35,11 +34,9 @@ public class WPSwitchPreference extends SwitchPreference implements PreferenceHi
         array.recycle();
     }
 
-    @Override
-    protected void onBindView(@NonNull View view) {
-        super.onBindView(view);
-
-        TextView titleView = view.findViewById(android.R.id.title);
+    @Override public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        TextView titleView = (TextView) holder.findViewById(android.R.id.title);
         if (titleView != null) {
             Resources res = getContext().getResources();
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.text_sz_large));
@@ -52,32 +49,60 @@ public class WPSwitchPreference extends SwitchPreference implements PreferenceHi
         }
 
         // style custom switch preference
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Switch switchControl = getSwitch((ViewGroup) view);
-            if (switchControl != null) {
-                switchControl.setThumbTintList(ContextCompat.getColorStateList(this.getContext(),
-                        R.color.dialog_compound_button_thumb));
-                switchControl.setTrackTintList(ContextCompat.getColorStateList(this.getContext(),
-                        R.color.dialog_compound_button_track));
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            Switch switchControl = getSwitch((ViewGroup) holder);
+//            if (switchControl != null) {
+//                switchControl.setThumbTintList(ContextCompat.getColorStateList(this.getContext(),
+//                        R.color.dialog_compound_button_thumb));
+//                switchControl.setTrackTintList(ContextCompat.getColorStateList(this.getContext(),
+//                        R.color.dialog_compound_button_track));
+//            }
+//        }
     }
 
-    private Switch getSwitch(ViewGroup parentView) {
-        for (int i = 0; i < parentView.getChildCount(); i++) {
-            View childView = parentView.getChildAt(i);
+//    @Override
+//    protected void onBindView(@NonNull View view) {
+//        super.onBindView(view);
+//
+//        TextView titleView = view.findViewById(android.R.id.title);
+//        if (titleView != null) {
+//            Resources res = getContext().getResources();
+//            titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, res.getDimensionPixelSize(R.dimen.text_sz_large));
+//            titleView.setTextColor(res.getColor(isEnabled() ? R.color.grey_dark : R.color.grey_lighten_10));
+//
+//            // add padding to the start of nested preferences
+//            if (!TextUtils.isEmpty(getDependency())) {
+//                ViewCompat.setPaddingRelative(titleView, res.getDimensionPixelSize(R.dimen.margin_large), 0, 0, 0);
+//            }
+//        }
+//
+//        // style custom switch preference
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            Switch switchControl = getSwitch((ViewGroup) view);
+//            if (switchControl != null) {
+//                switchControl.setThumbTintList(ContextCompat.getColorStateList(this.getContext(),
+//                        R.color.dialog_compound_button_thumb));
+//                switchControl.setTrackTintList(ContextCompat.getColorStateList(this.getContext(),
+//                        R.color.dialog_compound_button_track));
+//            }
+//        }
+//    }
 
-            if (childView instanceof Switch) {
-                return (Switch) childView;
-            } else if (childView instanceof ViewGroup) {
-                Switch theSwitch = getSwitch((ViewGroup) childView);
-                if (theSwitch != null) {
-                    return theSwitch;
-                }
-            }
-        }
-        return null;
-    }
+//    private Switch getSwitch(ViewGroup parentView) {
+//        for (int i = 0; i < parentView.getChildCount(); i++) {
+//            View childView = parentView.getChildAt(i);
+//
+//            if (childView instanceof Switch) {
+//                return (Switch) childView;
+//            } else if (childView instanceof ViewGroup) {
+//                Switch theSwitch = getSwitch((ViewGroup) childView);
+//                if (theSwitch != null) {
+//                    return theSwitch;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     @Override
     public boolean hasHint() {

@@ -29,47 +29,47 @@ public class EditTextPreferenceWithValidation extends SummaryEditTextPreference 
         super(context, attrs);
     }
 
-    @Override
-    protected void showDialog(Bundle state) {
-        super.showDialog(state);
-
-        final AlertDialog dialog = (AlertDialog) getDialog();
-        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        if (positiveButton != null) {
-            positiveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String error = null;
-                    CharSequence text = getEditText().getText();
-                    if (mValidationType == ValidationType.EMAIL) {
-                        error = ValidationUtils.validateEmail(text) ? null
-                                : getContext().getString(R.string.invalid_email_message);
-                    } else if (!TextUtils.isEmpty(text) && mValidationType == ValidationType.URL) {
-                        error = ValidationUtils.validateUrl(text) ? null
-                                : getContext().getString(R.string.invalid_url_message);
-                    }
-
-                    if (error != null) {
-                        getEditText().setError(error);
-                    } else {
-                        callChangeListener(text);
-                        dialog.dismiss();
-                    }
-                }
-            });
-        }
-
-        CharSequence summary = getSummary();
-        if (summary == null || summary.equals(mStringToIgnoreForPrefilling)) {
-            getEditText().setText("");
-        } else {
-            getEditText().setText(summary);
-            getEditText().setSelection(0, summary.length());
-        }
-
-        // clear previous errors
-        getEditText().setError(null);
-    }
+//    @Override
+//    protected void showDialog(Bundle state) {
+//        super.showDialog(state);
+//
+//        final AlertDialog dialog = (AlertDialog) getDialog();
+//        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+//        if (positiveButton != null) {
+//            positiveButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    String error = null;
+//                    CharSequence text = getEditText().getText();
+//                    if (mValidationType == ValidationType.EMAIL) {
+//                        error = ValidationUtils.validateEmail(text) ? null
+//                                : getContext().getString(R.string.invalid_email_message);
+//                    } else if (!TextUtils.isEmpty(text) && mValidationType == ValidationType.URL) {
+//                        error = ValidationUtils.validateUrl(text) ? null
+//                                : getContext().getString(R.string.invalid_url_message);
+//                    }
+//
+//                    if (error != null) {
+//                        getEditText().setError(error);
+//                    } else {
+//                        callChangeListener(text);
+//                        dialog.dismiss();
+//                    }
+//                }
+//            });
+//        }
+//
+//        CharSequence summary = getSummary();
+//        if (summary == null || summary.equals(mStringToIgnoreForPrefilling)) {
+//            getEditText().setText("");
+//        } else {
+//            getEditText().setText(summary);
+//            getEditText().setSelection(0, summary.length());
+//        }
+//
+//        // clear previous errors
+//        getEditText().setError(null);
+//    }
 
     public void setValidationType(ValidationType validationType) {
         mValidationType = validationType;

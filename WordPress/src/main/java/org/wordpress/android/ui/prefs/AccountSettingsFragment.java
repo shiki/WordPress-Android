@@ -3,10 +3,10 @@ package org.wordpress.android.ui.prefs;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.preference.Preference;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
+
 import org.wordpress.android.R;
 import org.wordpress.android.WordPress;
 import org.wordpress.android.fluxc.Dispatcher;
@@ -39,7 +41,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 @SuppressWarnings("deprecation")
-public class AccountSettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+public class AccountSettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
     private Preference mUsernamePreference;
     private EditTextPreferenceWithValidation mEmailPreference;
     private DetailListPreference mPrimarySitePreference;
@@ -56,6 +58,9 @@ public class AccountSettingsFragment extends PreferenceFragment implements Prefe
         ((WordPress) getActivity().getApplication()).component().inject(this);
 
         setRetainInstance(true);
+    }
+
+    @Override public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.account_settings);
 
         mUsernamePreference = findPreference(getString(R.string.pref_key_username));

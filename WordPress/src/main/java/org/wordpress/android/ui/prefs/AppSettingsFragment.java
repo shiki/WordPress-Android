@@ -5,17 +5,18 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
+import android.support.annotation.Nullable;
+import android.support.v14.preference.SwitchPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.Preference.OnPreferenceClickListener;
+import android.support.v7.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.takisoft.fix.support.v7.preference.PreferenceCategory;
+import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -50,7 +51,7 @@ import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
 
-public class AppSettingsFragment extends PreferenceFragment
+public class AppSettingsFragment extends PreferenceFragmentCompat
         implements OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
     public static final int LANGUAGE_CHANGED = 1000;
 
@@ -79,6 +80,9 @@ public class AppSettingsFragment extends PreferenceFragment
         ((WordPress) getActivity().getApplication()).component().inject(this);
 
         setRetainInstance(true);
+    }
+
+    @Override public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.app_settings);
 
         findPreference(getString(R.string.pref_key_send_usage)).setOnPreferenceChangeListener(
@@ -106,7 +110,7 @@ public class AppSettingsFragment extends PreferenceFragment
                         return true;
                     }
                 }
-        );
+                                                                                             );
         updateAnalyticsSyncUI();
 
         mLanguagePreference = (DetailListPreference) findPreference(getString(R.string.pref_key_language));
@@ -144,24 +148,24 @@ public class AppSettingsFragment extends PreferenceFragment
         // Set Local settings
         mOptimizedImage.setChecked(AppPrefs.isImageOptimize());
         setDetailListPreferenceValue(mImageMaxSizePref,
-                                     String.valueOf(AppPrefs.getImageOptimizeMaxSize()),
-                                     getLabelForImageMaxSizeValue(AppPrefs.getImageOptimizeMaxSize()));
+                String.valueOf(AppPrefs.getImageOptimizeMaxSize()),
+                getLabelForImageMaxSizeValue(AppPrefs.getImageOptimizeMaxSize()));
         setDetailListPreferenceValue(mImageQualityPref,
-                                     String.valueOf(AppPrefs.getImageOptimizeQuality()),
-                                     getLabelForImageQualityValue(AppPrefs.getImageOptimizeQuality()));
+                String.valueOf(AppPrefs.getImageOptimizeQuality()),
+                getLabelForImageQualityValue(AppPrefs.getImageOptimizeQuality()));
 
         mOptimizedVideo.setChecked(AppPrefs.isVideoOptimize());
         setDetailListPreferenceValue(mVideoWidthPref,
-                                     String.valueOf(AppPrefs.getVideoOptimizeWidth()),
-                                     getLabelForVideoMaxWidthValue(AppPrefs.getVideoOptimizeWidth()));
+                String.valueOf(AppPrefs.getVideoOptimizeWidth()),
+                getLabelForVideoMaxWidthValue(AppPrefs.getVideoOptimizeWidth()));
         setDetailListPreferenceValue(mVideoEncorderBitratePref,
-                                     String.valueOf(AppPrefs.getVideoOptimizeQuality()),
-                                     getLabelForVideoEncoderBitrateValue(AppPrefs.getVideoOptimizeQuality()));
+                String.valueOf(AppPrefs.getVideoOptimizeQuality()),
+                getLabelForVideoEncoderBitrateValue(AppPrefs.getVideoOptimizeQuality()));
         if (!WPMediaUtils.isVideoOptimizationAvailable()) {
             WPPrefUtils.removePreference(this, R.string.pref_key_optimize_media, R.string.pref_key_optimize_video);
             WPPrefUtils.removePreference(this, R.string.pref_key_optimize_media, R.string.pref_key_site_video_width);
             WPPrefUtils.removePreference(this, R.string.pref_key_optimize_media,
-                                         R.string.pref_key_site_video_encoder_bitrate);
+                    R.string.pref_key_site_video_encoder_bitrate);
         }
 
         updateEditorSettings();
@@ -504,10 +508,10 @@ public class AppSettingsFragment extends PreferenceFragment
             return false;
         }
         String title = getString(R.string.preference_privacy_settings);
-        Dialog dialog = mPrivacySettings.getDialog();
-        if (dialog != null) {
-            WPActivityUtils.addToolbarToDialog(this, dialog, title);
-        }
+//        Dialog dialog = mPrivacySettings.getDialog();
+//        if (dialog != null) {
+//            WPActivityUtils.addToolbarToDialog(this, dialog, title);
+//        }
         return true;
     }
 }

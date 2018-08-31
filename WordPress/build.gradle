@@ -123,7 +123,8 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:percent:27.1.1'
-    implementation 'com.android.support:preference-v7:27.1.1'
+    //implementation 'com.android.support:preference-v7:27.1.1'
+    implementation 'com.takisoft.fix:preference-v7:27.1.1.2'
 
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$arch_components_version"
