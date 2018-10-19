@@ -1,5 +1,6 @@
 package org.wordpress.android.push;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.RemoteInput;
 import android.support.v4.util.ArrayMap;
@@ -653,6 +655,15 @@ public class GCMMessageService extends FirebaseMessagingService {
         }
 
         private NotificationCompat.Builder getNotificationBuilder(Context context, String title, String message) {
+
+            final Notification notification = new Builder(context,
+                    context.getString(R.string.notification_channel_normal_id))
+                    .setSmallIcon(R.drawable.ic_my_sites_24dp)
+                    .setColor(context.getResources().getColor(R.color.blue_wordpress))
+                    .setContentTitle("Public version")
+                    .setContentText("content of the notif")
+                    .setTicker(message).build();
+
             // Build the new notification, add group to support wearable stacking
             return new NotificationCompat.Builder(context,
                     context.getString(R.string.notification_channel_normal_id))
@@ -663,6 +674,8 @@ public class GCMMessageService extends FirebaseMessagingService {
                     .setTicker(message)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(true)
+                    .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                    .setPublicVersion(notification)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                     .setGroup(NOTIFICATION_GROUP_KEY);
         }
