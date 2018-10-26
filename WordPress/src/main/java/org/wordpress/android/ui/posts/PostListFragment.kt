@@ -1,7 +1,6 @@
 package org.wordpress.android.ui.posts
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -89,6 +88,7 @@ import javax.inject.Inject
 private const val KEY_TRASHED_POST_LOCAL_IDS = "KEY_TRASHED_POST_LOCAL_IDS"
 private const val KEY_TRASHED_POST_REMOTE_IDS = "KEY_TRASHED_POST_REMOTE_IDS"
 private const val KEY_UPLOADED_REMOTE_POST_IDS = "KEY_UPLOADED_REMOTE_POST_IDS"
+private const val LIST_TYPE = "list-type-to-show"
 
 class PostListFragment : Fragment(),
         PostListAdapter.OnPostSelectedListener,
@@ -111,6 +111,7 @@ class PostListFragment : Fragment(),
 
     private lateinit var nonNullActivity: Activity
     private lateinit var site: SiteModel
+    private lateinit var listDescriptor: PostListDescriptor
 
     @Inject internal lateinit var siteStore: SiteStore
     @Inject internal lateinit var postStore: PostStore
@@ -119,13 +120,6 @@ class PostListFragment : Fragment(),
 
     private var listManager: ListManager<PostModel>? = null
     private var refreshListDataJob: Job? = null
-    private val listDescriptor: PostListDescriptor by lazy {
-        if (site.isUsingWpComRestApi) {
-            PostListDescriptorForRestSite(site)
-        } else {
-            PostListDescriptorForXmlRpcSite(site)
-        }
-    }
     private val postListAdapter: PostListAdapter by lazy {
         val postListAdapter = PostListAdapter(nonNullActivity, site)
         postListAdapter.setOnPostSelectedListener(this)
@@ -170,6 +164,14 @@ class PostListFragment : Fragment(),
 
         EventBus.getDefault().register(this)
         dispatcher.register(this)
+
+        val listType: PostListType = requireNotNull(arguments?.getSerializable(LIST_TYPE) as PostListType?)
+        listDescriptor = if (this.site.isUsingWpComRestApi) {
+            PostListDescriptorForRestSite(this.site, statusList = listType.postStatusList)
+        } else {
+            PostListDescriptorForXmlRpcSite(this.site, statusList = listType.postStatusList)
+        }
+        refreshListManagerFromStore(listDescriptor, shouldRefreshFirstPageAfterLoading = (savedInstanceState == null))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -236,35 +238,7 @@ class PostListFragment : Fragment(),
         swipeToRefreshHelper = buildSwipeToRefreshHelper(swipeRefreshLayout) {
             refreshPostList()
         }
-        refreshListManagerFromStore(listDescriptor, shouldRefreshFirstPageAfterLoading = (savedInstanceState == null))
-
         return view
-    }
-
-    fun handleEditPostResult(resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_OK || data == null || !isAdded) {
-            return
-        }
-
-        val localId = data.getIntExtra(EditPostActivity.EXTRA_POST_LOCAL_ID, 0)
-        val post = postStore.getPostByLocalPostId(localId)
-
-        if (post == null) {
-            if (!data.getBooleanExtra(EditPostActivity.EXTRA_IS_DISCARDABLE, false)) {
-                ToastUtils.showToast(nonNullActivity, R.string.post_not_found, ToastUtils.Duration.LONG)
-            }
-            return
-        }
-
-        UploadUtils.handleEditPostResultSnackbars(
-                nonNullActivity,
-                nonNullActivity.findViewById(R.id.coordinator),
-                data,
-                post,
-                site
-        ) {
-            UploadUtils.publishPost(nonNullActivity, post, site, dispatcher)
-        }
     }
 
     private fun refreshPostList() {
@@ -940,10 +914,11 @@ class PostListFragment : Fragment(),
         const val TAG = "post_list_fragment_tag"
 
         @JvmStatic
-        fun newInstance(site: SiteModel, targetPost: PostModel?): PostListFragment {
+        fun newInstance(site: SiteModel, listType: PostListType, targetPost: PostModel?): PostListFragment {
             val fragment = PostListFragment()
             val bundle = Bundle()
             bundle.putSerializable(WordPress.SITE, site)
+            bundle.putSerializable(LIST_TYPE, listType)
             targetPost?.let {
                 bundle.putInt(PostsListActivity.EXTRA_TARGET_POST_LOCAL_ID, it.id)
             }
