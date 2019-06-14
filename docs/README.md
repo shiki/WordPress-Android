@@ -1,4 +1,4 @@
-Welcome to the WordPress for Android wiki!
+Welcome to the WordPress for Android Docs!
 
 ## Development Practices
 
@@ -9,6 +9,7 @@ Welcome to the WordPress for Android wiki!
 
 ## Others
 
+- [Accessibility Guidelines](accessibility-guidelines.md)
 - [Frequently Asked Questions](faq.md)
 
 ## Further Reading
