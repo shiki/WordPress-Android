@@ -6,8 +6,9 @@ Supporting Right-to-left written scripts is quite straightforward as most issues
 
 Whenever you add a new animation/drawable, consider whether it needs to be mirrored in RtL mode (Use `ldrtl` drawable selector - example `drawable-ldrtl-v18`).
 
-<img src="images/rtl-left-to-right-animation.gif" width="300">
-<img src="images/rtl-right-to-left-animation.gif" width="300">
+| | |
+|--------|-------|
+| <img src="images/rtl-left-to-right-animation.gif" width="300">        | <img src="images/rtl-right-to-left-animation.gif" width="300">      |
 
 ## Images/Icons
 
